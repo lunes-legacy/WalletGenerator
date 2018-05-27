@@ -15,7 +15,7 @@ object WalletGenerator extends App {
   val WalletFileName = "wallet.dat"
 
   val parser = new OptionParser[Config]("walletgenerator") {
-    head("Waves wallet generator", "1.1")
+    head("Lunes wallet generator", "1.0")
     opt[Unit]('a', "append").action((_, c) =>
       c.copy(append = true)).text("append to existing wallet.dat / addresses.csv")
     opt[Int]('c', "count").action((x, c) =>
@@ -241,7 +241,7 @@ object WalletGenerator extends App {
   parser.parse(args, Config()) map { config =>
 
     val addrVersion:Byte = 1
-    val chainId:Byte = if(config.testnet) 'T' else 'W'
+    val chainId:Byte = if(config.testnet) '0' else '1'
 
     if (!config.append) new File(WalletFileName).delete()
     val db: MVStore = new MVStore.Builder().fileName(WalletFileName).encryptionKey(config.password.toCharArray).compress().open()
@@ -269,6 +269,7 @@ object WalletGenerator extends App {
         println("public key   : " + Base58.encode(publicKey))
         println("private key  : " + Base58.encode(privateKey))
         println("address      : " + address)
+        println("You can use your seed in lunes.conf for LunesNode LPoS.")
         println("-" * 150)
         csv.write((lastKey + 1) + ",\"" + seed + "\"," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
       }
