@@ -269,7 +269,8 @@ object WalletGenerator extends App {
         println("public key   : " + Base58.encode(publicKey))
         println("private key  : " + Base58.encode(privateKey))
         println("address      : " + address)
-        println("You can use your seed in lunes.conf for LunesNode LPoS.")
+        println("You can use your seed hash in lunes.conf for LunesNode LPoS.")
+        println("seedHash     : " +  Base58.encode(seed.getBytes) )
         println("-" * 150)
         csv.write((lastKey + 1) + ",\"" + seed + "\"," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
       }
