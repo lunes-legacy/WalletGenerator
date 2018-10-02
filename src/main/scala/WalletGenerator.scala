@@ -223,7 +223,8 @@ object WalletGenerator extends App {
     var w3: Int = 0
     val r = new Array[Byte](4)
     var x: Long = 0
-    for (i <- 0 to 5) {
+    //for (i <- 0 to 5) {
+    for (i <- 0 to 3) {
       new SecureRandom().nextBytes(r)
       x = (r(3).toLong & 0xff) + ((r(2).toLong & 0xff) << 8) + ((r(1).toLong & 0xff) << 16) + ((r(0).toLong & 0xff) << 24)
       w1 = (x % wordCount).toInt
