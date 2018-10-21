@@ -11,3 +11,6 @@ libraryDependencies += "com.h2database" % "h2-mvstore" % "1.4.193"
 
 mainClass in assembly := Some("WalletGenerator")
 assemblyJarName in assembly := "walletgenerator.jar"
+
+// https://mvnrepository.com/artifact/net.liftweb/lift-json
+libraryDependencies += "net.liftweb" %% "lift-json" % "3.3.0"

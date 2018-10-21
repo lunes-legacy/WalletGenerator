@@ -1,11 +1,15 @@
+
 import java.io.{File, FileWriter}
 import java.security.SecureRandom
-import scorex.crypto.hash.Blake2b256
-import scorex.crypto.hash.Keccak256
-import scorex.crypto.signatures.Curve25519
-import scorex.crypto.encode.Base58
-import scopt.OptionParser
+
+import net.liftweb.json.JsonDSL._
+import net.liftweb.json._
 import org.h2.mvstore.{MVMap, MVStore}
+import scopt.OptionParser
+import scorex.crypto.encode.Base58
+import scorex.crypto.hash.{Blake2b256, Keccak256}
+import scorex.crypto.signatures.Curve25519
+
 
 case class Config(append: Boolean = false, count: Int = 1, testnet: Boolean = false, password: String = "", filter: String = "", sensitive: Boolean = false)
 
@@ -265,22 +269,28 @@ object WalletGenerator extends App {
         if (lastKey == 0) seedMap.put("seed", Base58.encode(seed.getBytes).getBytes)
         nonceMap.put("nonce", lastKey + 1)
         pkeyMap.put(lastKey + 1, accountSeedHash)
-        println("n_address    : " + (lastKey + 1))
-        println("seed         : " + seed)
-        println("public_key   : " + Base58.encode(publicKey))
-        println("private_key  : " + Base58.encode(privateKey))
-        println("address      : " + address)
-        println("seed_hash     : " +  Base58.encode(seed.getBytes))
-        println("You can use your seed hash in lunes.conf for LunesNode LPoS.")
+        csv.write((lastKey + 1) + ",\"" +
+          seed + "\"," +
+          Base58.encode(publicKey) + "," +
+          Base58.encode(privateKey) + "," +
+          address + "," +
+          Base58.encode(seed.getBytes) + "\n"
+        )
+        val jsonOutput = (
+          (lastKey + 1).toString ->
+            ("seed" -> seed) ~
+              ("public_key" -> Base58.encode(publicKey)) ~
+              ("private_key" -> Base58.encode(privateKey)) ~
+              ("address" -> address) ~
+              ("seed_hash" -> Base58.encode(seed.getBytes))
+          )
+        println(prettyRender(jsonOutput))
         println("-" * 150)
-        csv.write((lastKey + 1) + ",\"" + seed + "\"," + Base58.encode(publicKey) + "," + Base58.encode(privateKey) + "," + address + "\n")
       }
-
     }
 
+    println("You can use your seed hash in lunes.conf for LunesNode LPoS.")
     db.close()
     csv.close()
-
   }
-
 }
